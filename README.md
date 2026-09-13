@@ -1,4 +1,4 @@
-# 🌍 ENVORYX – Smart Environmental Monitoring, Anomaly Detection & Decision Support System
+# 🌍 ENVORYX – Smart Environmental Monitoring,Anomaly Detection & Decision Support System
 
 ## 📌 Project Overview
 

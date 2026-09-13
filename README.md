@@ -1,4 +1,4 @@
-# 🌍 ENVORYX – Smart Environmental Monitoring & Decision Support System
+# 🌍 ENVORYX – Smart Environmental Monitoring, Anomaly Detection & Decision Support System
 
 ## 📌 Project Overview
 
@@ -6,7 +6,7 @@
 
 The system combines **air quality, acoustic noise, weather conditions, environmental risk, AI-based forecasting, anomaly detection, geospatial hotspot analysis, station comparison, impact simulation, personal exposure analysis, and smart environmental alerts** into a single interactive dashboard.
 
-The main objective of EcoGuard is to transform environmental data into understandable visual insights and actionable information for better environmental awareness and decision-making.
+The main objective of Envoryx is to transform environmental data into understandable visual insights and actionable information for better environmental awareness and decision-making.
 
 ---
 
@@ -121,7 +121,7 @@ The system presents pollutant information through interactive charts for easier 
 
 ## 3. 🔊 Noise Pollution Monitoring
 
-EcoGuard includes a dedicated **Acoustic Noise Pollution Monitor**.
+Envoryx includes a dedicated **Acoustic Noise Pollution Monitor**.
 
 Features include:
 
@@ -154,7 +154,7 @@ The system provides a weather-versus-PM2.5 scatter/trend visualization to help u
 
 # 5. 🤖 AI Predictions & Anomaly Spike Detection
 
-EcoGuard includes an **AI Forecast & Spikes** module.
+Envoryx includes an **AI Forecast & Spikes** module.
 
 ### 7-Day Environmental Forecast
 
@@ -191,7 +191,7 @@ This makes the system more than a simple monitoring dashboard by connecting abno
 
 # 6. 🗺️ Interactive Environmental Hotspot Map
 
-EcoGuard provides an interactive geographical visualization of environmental conditions.
+Envoryx provides an interactive geographical visualization of environmental conditions.
 
 The Hotspot Map includes:
 
@@ -207,7 +207,7 @@ The map module is implemented using a dedicated map manager for hotspot visualiz
 
 # 7. 📍 Multi-Station Comparative Analysis
 
-EcoGuard allows environmental conditions to be compared between multiple monitoring stations.
+Envoryx allows environmental conditions to be compared between multiple monitoring stations.
 
 The comparison module includes:
 
@@ -250,7 +250,7 @@ This provides a **what-if decision-support capability** for understanding potent
 
 # 9. 🛡️ Personal Environmental Exposure Analysis
 
-EcoGuard includes a Personal Environmental Exposure module.
+Envoryx includes a Personal Environmental Exposure module.
 
 The system calculates an exposure score based on factors such as:
 
@@ -271,7 +271,7 @@ The system also provides recommendations based on the calculated exposure risk.
 
 # 10. 🚨 Smart Environmental Alert Log
 
-EcoGuard provides a smart environmental alert system.
+Envoryx provides a smart environmental alert system.
 
 Alerts can be filtered according to severity:
 
@@ -303,7 +303,7 @@ The system also supports a test-alert interaction for demonstrating the alert wo
 # 🏗️ System Architecture
 
 ```text
-                   EcoGuard
+                   Envoryx 
                       │
         ┌─────────────┴─────────────┐
         │                           │
@@ -434,7 +434,7 @@ The current `index.html` loads Bootstrap 5.3 and Leaflet 1.9.4, while the projec
 
 ## Method 2 — Using VS Code
 
-1. Open the **EcoGuard** folder in Visual Studio Code.
+1. Open the **Envoryx** folder in Visual Studio Code.
 2. Install the **Live Server** extension.
 3. Right-click `index.html`.
 4. Select **Open with Live Server**.
@@ -446,7 +446,7 @@ The current `index.html` loads Bootstrap 5.3 and Leaflet 1.9.4, while the projec
 
 # 📊 Dashboard Outputs
 
-EcoGuard provides visual and analytical outputs including:
+Envoryx provides visual and analytical outputs including:
 
 * AQI
 * PM2.5

@@ -2,7 +2,7 @@
 
 ## 📌 Project Overview
 
-**EcoGuard** is a web-based smart environmental monitoring and decision-support dashboard designed to analyse multiple environmental parameters and provide meaningful insights about environmental conditions.
+**Envoryx** is a web-based smart environmental monitoring and decision-support dashboard designed to analyse multiple environmental parameters and provide meaningful insights about environmental conditions.
 
 The system combines **air quality, acoustic noise, weather conditions, environmental risk, AI-based forecasting, anomaly detection, geospatial hotspot analysis, station comparison, impact simulation, personal exposure analysis, and smart environmental alerts** into a single interactive dashboard.
 
@@ -46,13 +46,13 @@ Traditional monitoring systems may present raw environmental measurements withou
 
 This makes it difficult for users to understand the overall environmental situation and take appropriate action.
 
-**EcoGuard** addresses this challenge by providing a unified environmental analytics and decision-support dashboard.
+**Envoryx** addresses this challenge by providing a unified environmental analytics and decision-support dashboard.
 
 ---
 
 # 💡 Proposed Solution
 
-EcoGuard integrates environmental measurements and analytical modules into a single dashboard.
+Envoryx integrates environmental measurements and analytical modules into a single dashboard.
 
 ```text
 Environmental Data
@@ -384,7 +384,7 @@ End
 The current GitHub repository contains the following main files:
 
 ```text
-EcoGuard/
+Envoryx/
 │
 ├── index.html
 ├── styles.css
@@ -471,7 +471,7 @@ EcoGuard provides visual and analytical outputs including:
 
 # 🎯 Target Users
 
-EcoGuard can be useful for:
+Envoryx can be useful for:
 
 * 🌍 Environmental monitoring teams
 * 🏙️ Urban planning teams

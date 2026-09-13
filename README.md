@@ -1,4 +1,4 @@
-# 🌍 AerVyra – Smart Environmental Monitoring & Decision Support System
+# 🌍 ENVORYX – Smart Environmental Monitoring & Decision Support System
 
 ## 📌 Project Overview
 

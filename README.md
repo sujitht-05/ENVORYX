@@ -1,4 +1,4 @@
-# 🌍 EcoGuard – Smart Environmental Monitoring & Decision Support System
+# 🌍 AerVyra – Smart Environmental Monitoring & Decision Support System
 
 ## 📌 Project Overview
 

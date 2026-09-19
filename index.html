@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Envoryx - Environmental Monitoring & Impact Simulation Dashboard</title>
+    <meta name="description" content="Envoryx is an advanced AI-powered environmental monitoring web app tracking air pollution, acoustic noise, weather, and real-time impact simulation.">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-theme="dark">
+
+    <div id="app-container">
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <a href="#" class="brand-logo">
+                    <i class="bi bi-shield-check"></i>
+                    <span>Envoryx</span>
+                </a>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-category">Main Dashboard</div>
+                <a href="#" class="nav-link-item active" data-tab="overview">
+                    <i class="bi bi-grid-1x2-fill"></i>
+                    <span>Overview Hub</span>
+                </a>
+                <a href="#" class="nav-link-item" data-tab="air">
+                    <i class="bi bi-cloud-haze2-fill"></i>
+                    <span>Air Quality</span>
+                </a>
+                <a href="#" class="nav-link-item" data-tab="noise">
+                    <i class="bi bi-volume-up-fill"></i>
+                    <span>Noise Monitor</span>
+                </a>
+                <a href="#" class="nav-link-item" data-tab="weather">
+                    <i class="bi bi-cloud-sun-fill"></i>
+                    <span>Weather & Correlation</span>
+                </a>
+
+                <div class="nav-category">AI & Analytics</div>
+                <a href="#" class="nav-link-item" data-tab="ai">
+                    <i class="bi bi-cpu-fill"></i>
+                    <span>AI Forecast & Spikes</span>
+                </a>
+                <a href="#" class="nav-link-item" data-tab="map">
+                    <i class="bi bi-geo-alt-fill"></i>
+                    <span>Hotspot Map & Compare</span>
+                </a>
+                <a href="#" class="nav-link-item" data-tab="simulator">
+                    <i class="bi bi-sliders"></i>
+                    <span>Impact Simulator</span>
+                </a>
+                <a href="#" class="nav-link-item" data-tab="alerts">
+                    <i class="bi bi-bell-fill"></i>
+                    <span>Exposure & Alerts</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="live-indicator">
+                    <span class="pulse-dot"></span>
+                    <span>Live Sensor Telemetry: Active</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main id="main-content">
+            <!-- Top Sticky Header -->
+            <header id="top-header">
+                <div class="header-left">
+                    <button class="icon-btn mobile-toggle" id="mobile-sidebar-toggle" aria-label="Toggle Navigation Sidebar">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <div class="station-select-wrapper">
+                        <label for="station-select" class="visually-hidden">Monitoring Station Location</label>
+                        <select id="station-select" title="Monitoring Station Location">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="header-right">
+                    <button class="icon-btn" id="theme-toggle-btn" title="Toggle Light/Dark Theme" aria-label="Toggle Theme">
+                        <i class="bi bi-sun-fill"></i>
+                    </button>
+                    <button class="icon-btn" id="header-alerts-btn" title="Smart System Alerts" aria-label="Smart System Alerts">
+                        <i class="bi bi-bell-fill"></i>
+                        <span class="badge-dot"></span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- TAB 1: OVERVIEW DASHBOARD -->
+            <section id="view-overview" class="page-view active">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="h4 mb-1 font-weight-bold" id="current-station-name">Central Downtown Hub</h2>
+                        <p class="text-muted small m-0"><i class="bi bi-geo-alt me-1"></i><span id="current-station-zone">Commercial Zone</span> | Real-Time Telemetry Stream</p>
+                    </div>
+                </div>
+
+                <!-- KPI Summary Row -->
+                <div class="row g-3 mb-4">
+                    <div class="col-xl-3 col-md-6">
+                        <div class="glass-card kpi-card">
+                            <div class="kpi-info">
+                                <h6>Air Quality Index</h6>
+                                <div class="kpi-value" id="kpi-aqi-val">142</div>
+                                <div class="kpi-sub" id="kpi-aqi-status">Unhealthy for Sensitive</div>
+                            </div>
+                            <div class="kpi-icon-circle bg-warning bg-opacity-25 text-warning">
+                                <i class="bi bi-cloud-haze2-fill"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="glass-card kpi-card">
+                            <div class="kpi-info">
+                                <h6>Acoustic Noise</h6>
+                                <div class="kpi-value" id="kpi-noise-val">76.5 dB</div>
+                                <div class="kpi-sub" id="kpi-noise-status">Excessive Noise</div>
+                            </div>
+                            <div class="kpi-icon-circle bg-danger bg-opacity-25 text-danger">
+                                <i class="bi bi-volume-up-fill"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="glass-card kpi-card">
+                            <div class="kpi-info">
+                                <h6>Weather & Wind</h6>
+                                <div class="kpi-value" id="kpi-weather-val">28.5°C</div>
+                                <div class="kpi-sub" id="kpi-weather-sub">Humidity: 64% | Wind 8.2 km/h</div>
+                            </div>
+                            <div class="kpi-icon-circle bg-info bg-opacity-25 text-info">
+                                <i class="bi bi-wind"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="glass-card kpi-card">
+                            <div class="kpi-info">
+                                <h6>Combined Env. Risk</h6>
+                                <div class="kpi-value" id="kpi-risk-val">68/100</div>
+                                <div class="kpi-sub" id="kpi-risk-status">Moderate-High Risk</div>
+                            </div>
+                            <div class="kpi-icon-circle bg-purple bg-opacity-25 text-purple" style="background: rgba(139, 92, 246, 0.2); color: #8b5cf6;">
+                                <i class="bi bi-activity"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Gauges & Charts Row -->
+                <div class="row g-3 mb-4">
+                    <!-- AQI & Combined Gauges -->
+                    <div class="col-lg-4">
+                        <div class="glass-card text-center h-100">
+                            <div class="card-title-header justify-content-center">
+                                <h5><i class="bi bi-speedometer2 text-info"></i> Combined Risk & AQI Gauge</h5>
+                            </div>
+                            <div class="gauge-container mb-3">
+                                <svg class="gauge-svg" viewBox="0 0 160 160">
+                                    <circle class="gauge-bg" cx="80" cy="80" r="70"/>
+                                    <circle class="gauge-progress" id="aqi-gauge-circle" cx="80" cy="80" r="70"/>
+                                </svg>
+                                <div class="gauge-center-text">
+                                    <div class="gauge-score" id="aqi-gauge-score">142</div>
+                                    <div class="gauge-label">AQI</div>
+                                </div>
+                            </div>
+
+                            <div class="gauge-container">
+                                <svg class="gauge-svg" viewBox="0 0 160 160">
+                                    <circle class="gauge-bg" cx="80" cy="80" r="70"/>
+                                    <circle class="gauge-progress" id="risk-gauge-circle" cx="80" cy="80" r="70"/>
+                                </svg>
+                                <div class="gauge-center-text">
+                                    <div class="gauge-score" id="risk-gauge-score">68</div>
+                                    <div class="gauge-label">Risk Index</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 24h Trend Chart + AI Extension -->
+                    <div class="col-lg-8">
+                        <div class="glass-card h-100">
+                            <div class="card-title-header">
+                                <h5><i class="bi bi-graph-up-arrow text-primary"></i> 24-Hour AQI Trend & AI +12h Forecast</h5>
+                                <span class="badge bg-primary">Live Sensor + AI Ensemble</span>
+                            </div>
+                            <div style="height: 320px; position: relative;">
+                                <canvas id="aqiTrendChartCanvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Secondary Charts & Factors -->
+                <div class="row g-3">
+                    <div class="col-lg-6">
+                        <div class="glass-card">
+                            <div class="card-title-header">
+                                <h5><i class="bi bi-pie-chart-fill text-warning"></i> Probable Pollution Contributing Factors</h5>
+                            </div>
+                            <div style="height: 250px; position: relative;">
+                                <canvas id="factorsChartCanvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="glass-card">
+                            <div class="card-title-header">
+                                <h5><i class="bi bi-clock-history text-success"></i> Pollution Persistence Prediction</h5>
+                            </div>
+                            <div class="p-3">
+                                <h3 class="display-5 text-warning fw-bold mb-2" id="persistence-hours">5.5 Hours</h3>
+                                <p class="text-muted" id="persistence-note">Moderate wind speed will clear particulate dispersion slowly over ~5.5 hours unless traffic bottlenecks persist.</p>
+                                <div class="progress mt-3" style="height: 10px;">
+                                    <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated" style="width: 65%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: AIR QUALITY HUB -->
+            <section id="view-air" class="page-view">
+                <div class="mb-4">
+                    <h2 class="h4 font-weight-bold">🌫️ Detailed Air Quality Analysis</h2>
+                    <p class="text-muted small">Particulate matter composition and gas concentrations matched against WHO safe standards.</p>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-2 col-6">
+                        <div class="glass-card text-center p-3">
+                            <span class="text-muted small d-block">PM2.5</span>
+                            <h4 class="fw-bold my-1 text-danger" id="val-pm25">58.4 µg/m³</h4>
+                            <span class="badge bg-danger">Elevated</span>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-6">
+                        <div class="glass-card text-center p-3">
+                            <span class="text-muted small d-block">PM10</span>
+                            <h4 class="fw-bold my-1 text-warning" id="val-pm10">92.1 µg/m³</h4>
+                            <span class="badge bg-warning">Moderate</span>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-6">
+                        <div class="glass-card text-center p-3">
+                            <span class="text-muted small d-block">Carbon Monoxide (CO)</span>
+                            <h4 class="fw-bold my-1 text-info" id="val-co">1.8 ppm</h4>
+                            <span class="badge bg-success">Normal</span>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-6">
+                        <div class="glass-card text-center p-3">
+                            <span class="text-muted small d-block">Nitrogen Dioxide (NO₂)</span>
+                            <h4 class="fw-bold my-1 text-warning" id="val-no2">44.5 ppb</h4>
+                            <span class="badge bg-warning">Elevated</span>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-6">
+                        <div class="glass-card text-center p-3">
+                            <span class="text-muted small d-block">Sulfur Dioxide (SO₂)</span>
+                            <h4 class="fw-bold my-1 text-success" id="val-so2">12.3 ppb</h4>
+                            <span class="badge bg-success">Good</span>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-6">
+                        <div class="glass-card text-center p-3">
+                            <span class="text-muted small d-block">Ozone (O₃)</span>
+                            <h4 class="fw-bold my-1 text-primary" id="val-o3">38.2 ppb</h4>
+                            <span class="badge bg-success">Good</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card">
+                    <div class="card-title-header">
+                        <h5><i class="bi bi-bar-chart-line-fill text-danger"></i> Pollutants vs WHO Safe Standards</h5>
+                    </div>
+                    <div style="height: 380px; position: relative;">
+                        <canvas id="pollutantsChartCanvas"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: NOISE MONITORING -->
+            <section id="view-noise" class="page-view">
+                <div class="mb-4">
+                    <h2 class="h4 font-weight-bold">🔊 Acoustic Noise Pollution Monitor</h2>
+                    <p class="text-muted small">Decibel spectrum visualization and excessive sound spike detection.</p>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-lg-4">
+                        <div class="glass-card text-center p-4 h-100">
+                            <h6 class="text-muted text-uppercase mb-3">Live Acoustic dB Level</h6>
+                            <div class="spectrum-bars">
+                                <div class="spectrum-bar" style="animation-delay: 0.1s;"></div>
+                                <div class="spectrum-bar" style="animation-delay: 0.3s;"></div>
+                                <div class="spectrum-bar" style="animation-delay: 0.2s;"></div>
+                                <div class="spectrum-bar" style="animation-delay: 0.5s;"></div>
+                                <div class="spectrum-bar" style="animation-delay: 0.4s;"></div>
+                            </div>
+                            <h2 class="display-4 fw-bold text-danger my-2" id="live-noise-val">76.5 <span class="fs-5">dB</span></h2>
+                            <span class="badge bg-danger p-2 fs-6" id="live-noise-status">Excessive Urban Noise</span>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-8">
+                        <div class="glass-card h-100">
+                            <div class="card-title-header">
+                                <h5><i class="bi bi-soundwave text-danger"></i> 24-Hour Decibel Timeline & Threshold (70 dB)</h5>
+                            </div>
+                            <div style="height: 300px; position: relative;">
+                                <canvas id="noiseChartCanvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: WEATHER & CORRELATION -->
+            <section id="view-weather" class="page-view">
+                <div class="mb-4">
+                    <h2 class="h4 font-weight-bold">🌤️ Meteorological & Pollution Correlation</h2>
+                    <p class="text-muted small">Analyze how wind dispersion, humidity, and rainfall impact particulate concentration.</p>
+                </div>
+
+                <div class="glass-card mb-4">
+                    <div class="card-title-header">
+                        <h5><i class="bi bi-diagram-3-fill text-info"></i> Dual-Axis Weather vs PM2.5 Scatter & Trend Matrix</h5>
+                    </div>
+                    <div style="height: 380px; position: relative;">
+                        <canvas id="correlationChartCanvas"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: AI PREDICTIONS & SPIKES -->
+            <section id="view-ai" class="page-view">
+                <div class="mb-4">
+                    <h2 class="h4 font-weight-bold">🤖 AI Predictions & Anomaly Spike Detection</h2>
+                    <p class="text-muted small">Machine learning forecasts and automated root cause analysis for environmental spikes.</p>
+                </div>
+
+                <!-- 7-Day AI Forecast Trend Chart -->
+                <div class="glass-card mb-4">
+                    <div class="card-title-header">
+                        <h5><i class="bi bi-graph-up-arrow text-warning"></i> 7-Day AI Environmental Prediction Model (AQI, PM2.5, PM10, Noise)</h5>
+                        <span class="badge bg-success"><i class="bi bi-cpu me-1"></i>Ensemble ML Active</span>
+                    </div>
+                    <div style="height: 300px; position: relative;">
+                        <canvas id="ai7DayChartCanvas"></canvas>
+                    </div>
+                </div>
+
+                <!-- 7-Day AI Forecast Cards -->
+                <div class="mb-4">
+                    <h5 class="mb-3 font-weight-bold"><i class="bi bi-calendar3 text-primary me-2"></i>7-Day Multi-Parameter Breakdown</h5>
+                    <div class="d-flex flex-wrap" id="7day-forecast-container">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Pollution Spike Events Table -->
+                <div class="glass-card">
+                    <div class="card-title-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <h5 class="m-0"><i class="bi bi-lightning-charge-fill text-warning"></i> Automated Anomaly Spike Detector & Root Cause Analysis</h5>
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Spike Severity Filters">
+                            <button type="button" class="btn btn-outline-secondary active spike-filter-btn" data-severity="all">All Spikes</button>
+                            <button type="button" class="btn btn-outline-danger spike-filter-btn" data-severity="Critical">Critical</button>
+                            <button type="button" class="btn btn-outline-warning spike-filter-btn" data-severity="High">High</button>
+                            <button type="button" class="btn btn-outline-info spike-filter-btn" data-severity="Medium">Medium</button>
+                        </div>
+                    </div>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-dark table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Timestamp</th>
+                                    <th>Location Station</th>
+                                    <th>Spike Metric</th>
+                                    <th>Observed Jump</th>
+                                    <th>Severity</th>
+                                    <th>AI Detected Root Cause</th>
+                                    <th>Action Directive</th>
+                                </tr>
+                            </thead>
+                            <tbody id="spike-table-body">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 6: HOTSPOT MAP & COMPARE -->
+            <section id="view-map" class="page-view">
+                <div class="mb-4">
+                    <h2 class="h4 font-weight-bold">🗺️ Interactive Hotspot Map & Location Comparison</h2>
+                    <p class="text-muted small">Geospatial heat coverage circles and multi-station side-by-side comparative analysis.</p>
+                </div>
+
+                <div class="glass-card mb-4 p-2">
+                    <div id="leaflet-map"></div>
+                </div>
+
+                <!-- Station Comparison Chart -->
+                <div class="glass-card mb-4">
+                    <div class="card-title-header">
+                        <h5><i class="bi bi-bar-chart-steps text-info"></i> Multi-Station Environmental Parameter Comparison Chart</h5>
+                    </div>
+                    <div style="height: 320px; position: relative;">
+                        <canvas id="comparisonChartCanvas"></canvas>
+                    </div>
+                </div>
+
+                <h5 class="mb-3 font-weight-bold"><i class="bi bi-columns-gap me-2"></i>Station Comparative Analysis Matrix</h5>
+                <div class="row mb-4" id="comparison-matrix-container">
+                    <!-- Populated dynamically -->
+                </div>
+
+                <!-- Station Detailed Comparison Table -->
+                <div class="glass-card">
+                    <div class="card-title-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <h5 class="m-0"><i class="bi bi-table text-primary"></i> Detailed Station Telemetry Comparison Table</h5>
+                        <div class="input-group input-group-sm" style="width: 250px;">
+                            <span class="input-group-text bg-dark text-muted border-secondary"><i class="bi bi-search"></i></span>
+                            <input type="text" id="comparison-search-input" class="form-control bg-dark text-white border-secondary" placeholder="Search station or zone...">
+                        </div>
+                    </div>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-dark table-hover align-middle mb-0" id="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Station Name</th>
+                                    <th>Zone Type</th>
+                                    <th>AQI & Status</th>
+                                    <th>PM2.5</th>
+                                    <th>PM10</th>
+                                    <th>Acoustic Noise</th>
+                                    <th>Temp / Wind</th>
+                                    <th>Env. Risk Score</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="comparison-table-body">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 7: ENVIRONMENTAL IMPACT SIMULATOR -->
+            <section id="view-simulator" class="page-view">
+                <div class="mb-4">
+                    <h2 class="h4 font-weight-bold">🎛️ Environmental Impact Simulator</h2>
+                    <p class="text-muted small">Adjust traffic, industrial activity, wind, and rainfall to simulate real-time recalculated environmental metrics.</p>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <!-- Control Sliders -->
+                    <div class="col-lg-5">
+                        <div class="glass-card h-100">
+                            <div class="card-title-header">
+                                <h5><i class="bi bi-sliders text-primary"></i> Scenario Control Parameters</h5>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label d-block text-muted small mb-2">Preset Quick Scenarios:</label>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <button class="preset-pill active" data-preset="baseline">Baseline</button>
+                                    <button class="preset-pill" data-preset="rushhour">Rush Hour Jam</button>
+                                    <button class="preset-pill" data-preset="industrial_night">Industrial Shift</button>
+                                    <button class="preset-pill" data-preset="monsoon_cleansing">Monsoon Rain</button>
+                                    <button class="preset-pill" data-preset="green_transition">Green EV Shift</button>
+                                </div>
+                            </div>
+
+                            <hr class="border-secondary opacity-25 my-3">
+
+                            <div class="sim-control-group">
+                                <label for="sim-traffic"><span>Traffic Volume Change:</span> <span id="sim-traffic-val" class="text-primary font-weight-bold">0%</span></label>
+                                <input type="range" class="form-range sim-slider" id="sim-traffic" min="-50" max="100" value="0">
+                            </div>
+
+                            <div class="sim-control-group">
+                                <label for="sim-industry"><span>Industrial Output Change:</span> <span id="sim-industry-val" class="text-danger font-weight-bold">0%</span></label>
+                                <input type="range" class="form-range sim-slider" id="sim-industry" min="-50" max="100" value="0">
+                            </div>
+
+                            <div class="sim-control-group">
+                                <label for="sim-wind"><span>Wind Speed:</span> <span id="sim-wind-val" class="text-info font-weight-bold">8 km/h</span></label>
+                                <input type="range" class="form-range sim-slider" id="sim-wind" min="0" max="50" value="8">
+                            </div>
+
+                            <div class="sim-control-group">
+                                <label for="sim-rain"><span>Rainfall Rate:</span> <span id="sim-rain-val" class="text-primary font-weight-bold">0 mm/h</span></label>
+                                <input type="range" class="form-range sim-slider" id="sim-rain" min="0" max="50" value="0">
+                            </div>
+
+                            <div class="sim-control-group">
+                                <label for="sim-canopy"><span>Green Canopy Cover:</span> <span id="sim-canopy-val" class="text-success font-weight-bold">+10%</span></label>
+                                <input type="range" class="form-range sim-slider" id="sim-canopy" min="0" max="50" value="10">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Simulated Output & Comparison Chart -->
+                    <div class="col-lg-7">
+                        <div class="glass-card mb-3">
+                            <div class="card-title-header">
+                                <h5><i class="bi bi-cpu text-warning"></i> Real-Time Recalculated Output</h5>
+                                <span class="badge" id="sim-aqi-delta">0 AQI</span>
+                            </div>
+
+                            <div class="row text-center g-2">
+                                <div class="col-4">
+                                    <div class="p-2 border border-secondary rounded">
+                                        <span class="small text-muted d-block">Simulated AQI</span>
+                                        <h3 class="fw-bold my-1" id="sim-aqi-val">142</h3>
+                                        <span class="small" id="sim-aqi-status">Unhealthy Sensitive</span>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="p-2 border border-secondary rounded">
+                                        <span class="small text-muted d-block">Noise dB</span>
+                                        <h3 class="fw-bold my-1 text-danger" id="sim-noise-val">76.5 dB</h3>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="p-2 border border-secondary rounded">
+                                        <span class="small text-muted d-block">Risk Score</span>
+                                        <h3 class="fw-bold my-1 text-purple" id="sim-risk-val" style="color: #8b5cf6">68/100</h3>
+                                        <span class="small" id="sim-risk-status">Moderate-High</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row text-center g-2 mt-2">
+                                <div class="col-6">
+                                    <span class="small text-muted">Simulated PM2.5: </span><strong id="sim-pm25-val">58.4 µg/m³</strong>
+                                </div>
+                                <div class="col-6">
+                                    <span class="small text-muted">Persistence: </span><strong id="sim-persistence-val">5.5 hrs to clear</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-card">
+                            <div class="card-title-header">
+                                <h5><i class="bi bi-bar-chart-steps text-success"></i> Baseline vs Simulated Comparison Chart</h5>
+                            </div>
+                            <div style="height: 260px; position: relative;">
+                                <canvas id="simulatorChartCanvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 8: PERSONAL EXPOSURE & ALERTS -->
+            <section id="view-alerts" class="page-view">
+                <div class="mb-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div>
+                        <h2 class="h4 font-weight-bold mb-1">🛡️ Personal Environmental Exposure & Smart Alerts</h2>
+                        <p class="text-muted small m-0">Calculate personal exposure risk score based on outdoor activity and manage smart system alert logs.</p>
+                    </div>
+                    <button class="btn btn-sm btn-outline-success" id="trigger-test-alert-btn">
+                        <i class="bi bi-plus-circle me-1"></i>+ Trigger Test Alert
+                    </button>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-lg-5">
+                        <div class="glass-card h-100">
+                            <div class="card-title-header">
+                                <h5><i class="bi bi-person-bounding-box text-primary"></i> Personal Exposure Risk Calculator</h5>
+                            </div>
+                            <form id="exposure-form">
+                                <div class="mb-3">
+                                    <label for="exp-activity" class="form-label small text-muted">Planned Outdoor Activity</label>
+                                    <select class="form-select bg-dark text-white border-secondary" id="exp-activity">
+                                        <option value="1.0">Light Walking / Commute</option>
+                                        <option value="2.5" selected>Outdoor Exercise / Running</option>
+                                        <option value="3.5">Heavy Outdoor Work / Construction</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="exp-duration" class="form-label small text-muted">Outdoor Duration</label>
+                                    <select class="form-select bg-dark text-white border-secondary" id="exp-duration">
+                                        <option value="0.5">30 Minutes</option>
+                                        <option value="1.0" selected>1 Hour</option>
+                                        <option value="2.0">2 Hours</option>
+                                        <option value="4.0">4+ Hours</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="exp-group" class="form-label small text-muted">Vulnerability & Age Group</label>
+                                    <select class="form-select bg-dark text-white border-secondary" id="exp-group">
+                                        <option value="1.0" selected>Healthy Adult</option>
+                                        <option value="1.6">Child or Elderly Individual</option>
+                                        <option value="2.2">Asthma / Respiratory Sensitivity</option>
+                                    </select>
+                                </div>
+                            </form>
+
+                            <hr class="border-secondary opacity-25 my-3">
+
+                            <div class="text-center">
+                                <span class="small text-muted text-uppercase">Exposure Score</span>
+                                <h2 class="display-5 fw-bold my-1" id="exp-score-val" style="color: #10b981">28 / 100</h2>
+                                <h6 class="fw-bold mb-2" id="exp-score-status" style="color: #10b981">Safe Outdoor Exposure</h6>
+                                <p class="small text-muted" id="exp-recommendation">Safe for normal outdoor exercise and activities. No mask required.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-7">
+                        <div class="glass-card h-100">
+                            <div class="card-title-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+                                <h5 class="m-0"><i class="bi bi-bell-fill text-warning"></i> Smart Environmental Alert Log Feed</h5>
+                                <div class="btn-group btn-group-sm" role="group" aria-label="Alert Filters">
+                                    <button type="button" class="btn btn-outline-secondary active alert-filter-btn" data-severity="all">All</button>
+                                    <button type="button" class="btn btn-outline-danger alert-filter-btn" data-severity="Critical">Critical</button>
+                                    <button type="button" class="btn btn-outline-warning alert-filter-btn" data-severity="High">High</button>
+                                    <button type="button" class="btn btn-outline-info alert-filter-btn" data-severity="Moderate">Moderate</button>
+                                </div>
+                            </div>
+                            <div id="alerts-feed-container" class="mt-3">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- External JS Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom JS Files -->
+    <script src="js/data.js"></script>
+    <script src="js/simulator.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
